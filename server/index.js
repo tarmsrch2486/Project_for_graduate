@@ -13,9 +13,9 @@ const secret = "Mysecret_159";
 const crypto = require("crypto");
 const { error } = require("console");
 
-// // Call the cryptr and create a secret key
-// const Cryptr = require("cryptr");
-// const cryptr = new Cryptr("Secretkey");
+const multer = require('multer')
+const path = require('path')
+
 
 //Variable for conection to database
 const db = mysql.createConnection({
@@ -36,13 +36,47 @@ db.connect((err) => {
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('public'))
+
+
+const storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, 'public/images')
+      },
+      filename: (req, file, cb) => {
+        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
+      }
+})
+
+const upload = multer({
+    storage: storage
+})
+
+//upload_payment
+app.put("/payment/:id", upload.single("image"), (req, res) => {
+  const id = req.params.id
+  const img = req.file.filename
+  const query = "UPDATE member SET receipt = ? WHERE reg_id = ?"
+
+  
+  db.query(query, [img, id], (err, result) => {
+    if(err){
+        console.log(err)
+    }else{
+        res.json({ status: 'true' })
+    }
+  })
+  
+})
+
+
 
 //Login user
 app.post("/login_user", (req, res) => {
   const reg_id = req.body.reg_id;
   const id_card = req.body.id_card;
 
-  var query = `SELECT reg_id, id_card, course, candidate, prefix, name_lastnameTH, name_lastnameEN, nationality, tel, email, educational, branch, permission, receipt, gender,
+  var query = `SELECT reg_id, id_card, course, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender,
   CONCAT( DATE_FORMAT( birthday , '%d' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%Y' ) +543 ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
   FROM member
   INNER JOIN provinces 
@@ -136,8 +170,8 @@ app.get("/user_information/:id", (req, res) => {
 app.post("/add_member", (req, res) => {
   const id_card = req.body.id_card;
   const reg_id = req.body.reg_id;
-  const name_lastnameTH = req.body.name_lastnameTH;
-  const name_lastnameEN = req.body.name_lastnameEN;
+  const name = req.body.name;
+  const lastname = req.body.lastname;
   const gender = req.body.gender;
   const religion = req.body.religion;
   const status = req.body.status;
@@ -158,8 +192,8 @@ app.post("/add_member", (req, res) => {
   const district = req.body.district;
 
   const query =
-    `INSERT INTO member (reg_id , id_card, course, candidate, prefix, name_lastnameTH, name_lastnameEN, nationality, birthday, tel, email, address, educational, branch, province, amphure, district, gender, status, permission, receipt) 
-    VALUES (? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    `INSERT INTO member (reg_id , id_card, course, candidate, prefix, name, lastname, nationality, birthday, tel, email, address, educational, branch, province, amphure, district, gender,permission, receipt) 
+    VALUES (? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   bcrypt.hash(id_card, saltRounds, function (err, hash) {
     db.query(
@@ -170,8 +204,8 @@ app.post("/add_member", (req, res) => {
         course,
         candidate,
         prefix,
-        name_lastnameTH,
-        name_lastnameEN,
+        name,
+        lastname,
         nationality,
         birthday,
         tel, 
@@ -183,7 +217,6 @@ app.post("/add_member", (req, res) => {
         amphure,
         district,
         gender,
-        status,
         permission,
         receipt,
       ],
@@ -276,7 +309,17 @@ app.post("/admin_login", (req, res) => {
 });
 
 app.get("/display_all_user", (req, res) => {
-  db.query("SELECT * FROM member", (err, result) => {
+  const query = `SELECT reg_id, id_card, course, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender,
+  CONCAT( DATE_FORMAT( birthday , '%d' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%Y' ) +543 ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
+  FROM member
+  INNER JOIN provinces 
+  ON member.province=provinces.id
+  INNER JOIN amphures
+  on member.amphure=amphures.id
+  INNER JOIN districts
+  on member.district=districts.id`
+
+  db.query(query, (err, result) => {
     if (err) {
       res.send(err);
     }
@@ -291,8 +334,18 @@ app.get("/display_all_user", (req, res) => {
 //Get single user
 app.get("/edit_user_info/:id", (req, res) => {
   const id = req.params.id;
+  const query = `SELECT reg_id, id_card, course, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender,
+  CONCAT( DATE_FORMAT( birthday , '%d' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%Y' ) +543 ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
+  FROM member
+  INNER JOIN provinces 
+  ON member.province=provinces.id
+  INNER JOIN amphures
+  on member.amphure=amphures.id
+  INNER JOIN districts
+  on member.district=districts.id
+  WHERE reg_id = ?`
 
-  db.query("SELECT * FROM member WHERE id = ?", [id], (err, result) => {
+  db.query(query, [id], (err, result) => {
     if (err) {
       res.send(err);
     }
@@ -377,5 +430,73 @@ app.put("/update_permission", (req, res) => {
     }
   );
 });
+
+
+app.get("/user_score/:id", (req, res) => {
+  const id = req.params.id
+  const query = `SELECT reg_id, id_card, course, candidate, prefix, name, lastname, 
+  nationality, tel, email, educational, branch, permission, receipt, gender, kn_score,
+  profi_score, sum_score, pass_fail, CONCAT( DATE_FORMAT( birthday , '%d' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%Y' ) +543 ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
+  FROM member
+  INNER JOIN provinces 
+  ON member.province=provinces.id
+  INNER JOIN amphures
+  on member.amphure=amphures.id
+  INNER JOIN districts
+  on member.district=districts.id
+  WHERE permission = "ผู้สมัคร" AND MONTH(birthday) = ?;`
+
+  db.query(query, [id],(err, result) => {
+    if (err) {
+      res.send(err);
+    }else {
+      res.send(result);
+    }
+  });
+});
+
+app.get("/certifi_rp/:id", (req, res) => {
+  const id = req.params.id
+  const query = `SELECT reg_id, id_card, course, candidate, prefix, name, lastname, 
+  nationality, tel, email, educational, branch, permission, receipt, gender, kn_score,
+  profi_score, sum_score, pass_fail, CONCAT( DATE_FORMAT( birthday , '%d' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%Y' ) +543 ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
+  FROM member
+  INNER JOIN provinces 
+  ON member.province=provinces.id
+  INNER JOIN amphures
+  on member.amphure=amphures.id
+  INNER JOIN districts
+  on member.district=districts.id
+  WHERE pass_fail = "ผ่าน" AND MONTH(birthday) = ?;`
+
+  db.query(query, [id],(err, result) => {
+    if (err) {
+      res.send(err);
+    }else {
+      res.send(result);
+    }
+  });
+});
+
+
+app.put("/sum_score", (req, res) => {
+  const { reg_id, course, name, lastname } = req.body
+  const kn_score = req.body.kn_score
+  const profi_score = req.body.profi_score
+  const total_score = req.body.total_score
+  const pass_fail = req.body.pass_fail
+  const sql = `UPDATE member SET kn_score = ?, profi_score = ?, sum_score = ?, pass_fail = ?
+  WHERE reg_id = ?`
+
+  db.query(sql, [kn_score, profi_score, total_score, pass_fail, reg_id], (err, result) => {
+    if(err){
+      res.json({ status: 'false' })
+      console.log(err)
+    }else{
+      res.json({ status: 'true' })
+    }
+  })
+
+})
 
 app.listen(PORT, () => console.log("Server is running on port 3000"));

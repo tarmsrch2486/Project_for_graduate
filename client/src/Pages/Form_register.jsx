@@ -8,8 +8,8 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function Form_register() {
   const [id_card, setId_card] = useState("")
-  const [name_lastnameTH, setName_lastnameTH] = useState("")
-  const [name_lastnameEN, setName_lastnameEN] = useState("")
+  const [name, setName] = useState("")
+  const [lastname, setLastname] = useState("")
   const [gender, setGender] = useState("")
   const [permission, setPermission] = useState("")
   const [receipt, setReceipt] = useState("")
@@ -79,15 +79,14 @@ function Form_register() {
     axios.post("http://localhost:3000/add_member", {
       reg_id: "",
       id_card: id_card,
-      name_lastnameTH: name_lastnameTH,
-      name_lastnameEN: name_lastnameEN,
+      name: name,
+      lastname: lastname,
       province: province_id,
       amphure: amphure_id,
       district: district_id,
       gender: gender,
-      status: "as",
       permission: "รอชำระเงิน",
-      receipt: "sa",
+      receipt: "",
       course: course,
       candidate: candidate,
       prefix: prefix,
@@ -204,10 +203,19 @@ function Form_register() {
 
                   {/* name and lastname TH*/}
                   <div className="form-group row">
-                    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label" style={{ fontWeight: "bolder" }}>ชื่อ-สกุล ภาษาไทย(TH) <span style={{ color: "red" }}>*</span></label>
+                    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label" style={{ fontWeight: "bolder" }}>ชื่อ <span style={{ color: "red" }}>*</span></label>
                     <div className="col-sm-9">
                       <input type="text" className="form-control" id="exampleInputUsername2" placeholder="ชื่อ-สกุล ภาษาไทย"
-                        onChange={(e) => setName_lastnameTH(e.target.value)} />
+                        onChange={(e) => setName(e.target.value)} />
+                    </div>
+                  </div>
+
+                  {/* name and lastname */}
+                  <div className="form-group row">
+                    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label" style={{ fontWeight: "bolder" }}>นามสกุล<span style={{ color: "red" }}>*</span></label>
+                    <div className="col-sm-9">
+                      <input type="text" className="form-control" id="exampleInputUsername2" placeholder="นามสกุล"
+                        onChange={(e) => setLastname(e.target.value)} />
                     </div>
                   </div>
 
@@ -228,14 +236,7 @@ function Form_register() {
                   </div>
 
 
-                  {/* name and lastname */}
-                  <div className="form-group row">
-                    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label" style={{ fontWeight: "bolder" }}>ชื่อ-สกุล ภาษาอังกฤษ(EN)<span style={{ color: "red" }}>*</span></label>
-                    <div className="col-sm-9">
-                      <input type="text" className="form-control" id="exampleInputUsername2" placeholder="ชื่อ-สกุล ภาษาอังกฤษ"
-                        onChange={(e) => setName_lastnameEN(e.target.value)} />
-                    </div>
-                  </div>
+                  
 
 
                   {/* id_card */}

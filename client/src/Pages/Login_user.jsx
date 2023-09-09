@@ -32,10 +32,32 @@ function Login_user() {
     const navigate = useNavigate()
 
 
+    //Payment
+    const [img, setImg] = useState()
+    const [upload_id, setUpload_id] = useState("")
+
+    const handle_img = (e) => {
+        setImg(e.target.files[0])
+    }
+
+    const upload_img = () => {
+        const formdata = new FormData()
+        formdata.append("image", img)
+        axios.put(`http://localhost:3000/payment/${upload_id}`, formdata)
+            .then((res) => {
+                if (res.data.status == 'true') {
+                    alert("บันทึกข้อมูลเสร็จสิ้น")
+                    window.location = '/login_user'
+                } else {
+                    return false
+                }
+            })
+    }
+
+
 
     //Debug
     const [checkPayment, setCheckPayment] = useState(null)
-    console.log(checkPayment)
 
 
     // const check_payment = () => {
@@ -57,10 +79,7 @@ function Login_user() {
         }).then((res) => {
             //If there are not id_card, Let's show error according to message below
             if (res.data.status == "false") {
-                // setChange_style("")
-                console.log("false")
-                // setLogin_failed(res.data.error)
-                // setAuthentication(false)
+                alert("กรุณาใส่ รหัสประจำตัวการสอบ หรือ เลขบัตรประจำตัวประชาชน")
             } else {
                 // setChange_style("modal")
                 const id_card = res.data.id_card
@@ -69,6 +88,7 @@ function Login_user() {
                 setLogin_successful(res.data.message)
                 setAuthentication(true)
                 setUser_data(res.data.result)
+                setUpload_id(res.data.result[0].reg_id)
             }
         })
 
@@ -76,7 +96,10 @@ function Login_user() {
 
     const reload_page = () => {
         location.reload()
+    }
 
+    const direct_pay = (reg_id) => {
+        window.location = `/payment/${reg_id}`
     }
 
 
@@ -136,162 +159,127 @@ function Login_user() {
                                                     {captchaDone
                                                         ? (<>
                                                             {/* Submitform */}
-                                                            <button onClick={submit_login} type="button" className="btn btn-warning py-3" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap" >
+                                                            <button onClick={submit_login} type="button" className="btn btn-warning py-3" >
                                                                 ตรวจสอบสถานะ
                                                             </button>
-
                                                         </>
                                                         )
                                                         : null}
 
 
 
-                                                    {/* Warning */}
-                                                    {authentication
-                                                        ? <>
-                                                            <div className="modal fade" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                <div className="modal-dialog">
-                                                                    <div className="modal-content">
-                                                                        <div className="modal-header">
-                                                                            <h2 style={{ fontWeight: 'bold' }} className="modal-title" id="exampleModalLabel">ข้อมูลผู้สมัครสอบ</h2>
-                                                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                                                        </div>
-                                                                        <div className="modal-body">
-                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>เลขบัตรประจำตัวประชาชน:</h4>
-                                                                                <span className='fs-6'>x-xxxx-xxxxx-{dp_idcard}</span>
-                                                                            </div>
-                                                                            {user_data.map((val) => {
-                                                                                return (
-                                                                                    <>
-                                                                                        <div key={val.id}>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>หลักสูตร(ฝึกอบรม):</h4>
-                                                                                                <span className='fs-6'>{val.course}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>ชื่อ - นามสกุล(TH):</h4>
-                                                                                                <span className='fs-6'>{val.name_lastnameTH}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>ชื่อ - นามสกุล(EN):</h4>
-                                                                                                <span className='fs-6'>{val.name_lastnameEN}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>ที่อยู่ตามทะเบียนบ้าน/ที่อยู่ตามบัตรประชาชน:</h4>
-                                                                                                <span className='fs-6'>{val.address}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>จังหวัด:</h4>
-                                                                                                <span className='fs-6'>{val.province_name}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>อำเภอ:</h4>
-                                                                                                <span className='fs-6'>{val.amphure_name}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>ตำบล:</h4>
-                                                                                                <span className='fs-6'>{val.district_name}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>สัญชาติ:</h4>
-                                                                                                <span className='fs-6'>{val.nationality}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>วัน เดือน ปี เกิด:</h4>
-                                                                                                <span className='fs-6'>{val.Thaibirthday}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>เบอร์โทรศัพท์:</h4>
-                                                                                                <span className='fs-6'>{val.tel}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>อีเมลล์:</h4>
-                                                                                                <span className='fs-6'>{val.email}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>เพศ:</h4>
-                                                                                                <span className='fs-6'>{val.gender}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>วุฒิการศึกษาสูงสุด:</h4>
-                                                                                                <span className='fs-6'>{val.educational}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>สาขา:</h4>
-                                                                                                <span className='fs-6'>{val.branch}</span>
-                                                                                            </div>
-                                                                                            <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>สิทธิ์การเข้าถึง:</h4>
-                                                                                                <span className='fs-6'>{val.permission}</span>
-                                                                                            </div>
 
-
-                                                                                            {/* Checkdebug payment */}
-                                                                                            {val.receipt == ""
-                                                                                                ? (
-                                                                                                    <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                        <h4 style={{ fontWeight: 'bold', marginRight: "10px", color: "red" }}>การยืนยันชำระเงิน:</h4>
-                                                                                                        <div className='d-flex flex-column mb-3'>
-                                                                                                            <span className='fs-6' style={{ marginBottom: "10px", color: "red" }}>กรุณาชำระเงิน</span>
-                                                                                                            <img style={{ marginBottom: "10px", color: "red" }} src="https://cdn-icons-png.flaticon.com/512/105/105614.png" class="img-fluid" alt="" width={60} height={40} />
-                                                                                                            <Link to={{ pathname: `/payment/${val.reg_id}` }}>
-                                                                                                                <button type="button" className="btn btn-warning py-2 px-4"> ชำระเงิน</button>
-                                                                                                            </Link>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                )
-                                                                                                : <div className="mb-2" style={{ display: 'flex' }}>
-                                                                                                    <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>การยืนยันชำระเงิน:</h4>
-                                                                                                    <span className='fs-6'>ชำระเงินเรียบร้อยแล้ว</span>
-                                                                                                </div>
-                                                                                            }
-                                                                                        </div>
-                                                                                    </>
-                                                                                )
-                                                                            })}
-                                                                        </div>
-                                                                        <div className="modal-footer">
-                                                                            <button type="button" className="btn btn-danger py-2 px-4" data-bs-dismiss="modal" onClick={reload_page}>ปิด</button>
-                                                                            <button type="button" className="btn btn-warning py-2 px-4">ยืนยัน</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </>
-                                                        : //if it occurred Let's show the component below
-                                                        <>
-                                                            <div className="modal fade" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                <div className="modal-dialog">
-                                                                    <div className="modal-content">
-                                                                        <div className="modal-header">
-                                                                            <h5 className="modal-title" id="exampleModalLabel">แจ้งเตือน</h5>
-                                                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                                                                        </div>
-                                                                        <div className="modal-body">
-                                                                            <div className="d-sm-flex align-items-center mt-2 justify-content-center"  ><h4 className=" fw-bold" style={{ color: "red" }} >{login_failed}</h4></div>
-                                                                        </div>
-                                                                        <div className="modal-footer">
-                                                                            <button type="button" className="btn btn-warning py-2 px-5" data-bs-dismiss="modal" onClick={reload_page}>ปิด</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </>
-
-
-                                                    }
                                                 </form>
-
-
                                             </div>
+                                            <hr />
+                                            {/* Warning */}
+                                            {authentication
+                                                ? <>
+                                                    <div className="auth-form-light text-left py-5 px-4 px-sm-5 mt-4 card card-body">
+                                                        <h3 style={{ fontWeight: 'bolder', textAlign: "center" }}>ข้อมูลผู้สมัครสอบ</h3>
+                                                        <hr />
+                                                        {user_data.map((val) => {
+                                                            return (
+                                                                <div key={val.reg_id} className='mt-3'>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>หลักสูตร(ฝึกอบรม):</h5>
+                                                                        <span className='fs-6'>{val.course}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>ชื่อ-นามสกุล:</h5>
+                                                                        <span className='fs-6'>{val.name} {val.lastname}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>ที่อยู่ตามทะเบียนบ้าน/ที่อยู่ตามบัตรประชาชน:</h5>
+                                                                        <span className='fs-6'>{val.address}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>จังหวัด:</h5>
+                                                                        <span className='fs-6'>{val.province_name}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>อำเภอ:</h5>
+                                                                        <span className='fs-6'>{val.amphure_name}</span>
+                                                                    </div>
+                                                                    <div className="mb-2" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>ตำบล:</h5>
+                                                                        <span className='fs-6'>{val.district_name}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>สัญชาติ:</h5>
+                                                                        <span className='fs-6'>{val.nationality}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>วัน เดือน ปี เกิด:</h5>
+                                                                        <span className='fs-6'>{val.Thaibirthday}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>เบอร์โทรศัพท์:</h5>
+                                                                        <span className='fs-6'>{val.tel}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h4 style={{ fontWeight: 'bold', marginRight: "10px" }}>อีเมลล์:</h4>
+                                                                        <span className='fs-6'>{val.email}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>เพศ:</h5>
+                                                                        <span className='fs-6'>{val.gender}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>วุฒิการศึกษาสูงสุด:</h5>
+                                                                        <span className='fs-6'>{val.educational}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>สาขา:</h5>
+                                                                        <span className='fs-6'>{val.branch}</span>
+                                                                    </div>
+                                                                    <div className="mb-3" style={{ display: 'flex' }}>
+                                                                        <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>สิทธิ์การเข้าถึง:</h5>
+                                                                        <span className='fs-6'>{val.permission}</span>
+                                                                    </div>
+
+
+                                                                    {/* Checkdebug payment */}
+                                                                    {val.receipt == ""
+                                                                        ? (
+                                                                            <div className="mb-3" style={{ display: 'flex' }}>
+                                                                                <h5 style={{ fontWeight: 'bold', marginRight: "10px", color: "red" }}>การยืนยันชำระเงิน:</h5>
+                                                                                <div className='d-flex flex-column mb-3'>
+                                                                                    <span className='fs-6' style={{ marginBottom: "10px", color: "red" }}>กรุณาชำระเงิน</span>
+                                                                                    <img style={{ marginBottom: "10px", color: "red" }} src="https://cdn-icons-png.flaticon.com/512/105/105614.png" class="img-fluid" alt="" width={60} height={40} />
+                                                                                    <Link to={{ pathname: `/payment/${val.reg_id}` }}>
+                                                                                        <button type="button" className="btn btn-warning py-2 px-4"> ชำระเงิน</button>
+                                                                                    </Link>
+                                                                                </div>
+                                                                            </div>
+                                                                        )
+                                                                        : (
+                                                                            <>
+                                                                                <div className="mb-3" style={{ display: 'flex' }}>
+                                                                                    <h5 style={{ fontWeight: 'bold', marginRight: "10px" }}>การยืนยันชำระเงิน:</h5>
+                                                                                    <span className='fs-6' style={{ color: "green" }} >ชำระเงินเรียบร้อยแล้ว</span>
+                                                                                </div>
+                                                                                <input type="file" onChange={handle_img} className="form-control py-2" id="customFile" />
+                                                                                <button type="button" onClick={upload_img} className="btn btn-warning px-5 mt-3">อัพเดตการชำระเงิน</button>
+                                                                            </>
+
+
+                                                                        )
+
+
+                                                                    }
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </>
+                                                : //if it occurred Let's show the component below
+                                                <>
+
+                                                </>
+                                            }
                                             <div>
                                             </div>
-
-
-
-
                                         </div>
                                     </div>
                                 </div>

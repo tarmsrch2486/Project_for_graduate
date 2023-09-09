@@ -24,15 +24,6 @@ function User_info() {
   const [show_permission, setShow_permission] = useState(null)
 
 
-
-  const generatePDF = useReactToPrint({
-    content: ()=>componentPDF.current,
-    documentTitle:"User_data",
-    onAfterPrint:()=>alert("Data saved in PDF")
-  })
-
- 
-
   //Logout and Clear a localStorage
   const handleLogout = () => {
     localStorage.clear()
@@ -60,10 +51,6 @@ function User_info() {
   const For_user_dont_pay = () => {
     window.location = '/waiting_for_payment'
   }
-
-
-
-
 
 
   const permission = localStorage.getItem('permission')
@@ -104,16 +91,17 @@ function User_info() {
             <Navbar_admin prop={permission} />
 
 
-            <div  className="container-fluid" >
+            <div className="container-fluid" >
               {/* Page Heading */}
               {/* <h1 className="h3 mb-2 text-gray-800">ข้อมูลผู้สมัคร</h1>
               <p className="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p> */}
               {/* DataTales Example */}
               <div className="card shadow mb-4">
                 <div className="card-header py-3">
-                  <h3 className="m-0 font-weight-bold text-primary">ข้อมูลผู้เข้าร่วมการสอบ</h3>
+                  <h3 className="m-0 font-weight-bold text-primary"></h3>
                 </div>
                 <div className="card-body">
+                  <h1 style={{ textAlign: 'center', fontWeight: "bold", color: "blue" }}>ข้อมูลผู้เข้าร่วมการสอบ</h1>
                   <div className="table-responsive">
                     <div id="dataTable_wrapper" className="dataTables_wrapper dt-bootstrap4">
                       <div className="row">
@@ -147,30 +135,31 @@ function User_info() {
 
                         </div>
                       </div>
-                      <div  className="row"><div className="col-sm-12">
-                        <table ref={componentPDF} className="table table-bordered dataTable" id="dataTable" width="100%" cellSpacing={0} role="grid" aria-describedby="dataTable_info" style={{ width: '100%' }}>
+                      <div className="row"><div className="col-sm-12">
+                        <table className="table table-bordered dataTable" id="dataTable" width="100%" cellSpacing={0} role="grid" aria-describedby="dataTable_info" style={{ width: '100%' }}>
                           <thead>
                             <tr role="row" style={{ textAlign: "center" }}>
-                              <th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: '73.2px' }}>ลำดับ</th>
-                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: '73.2px' }}>เลขบัตรปชช</th>
-                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '150px' }}>ชื่อ-นามสกุล</th>
-                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Age: activate to sort column ascending" style={{ width: '100px' }}>จังหวัด</th>
-                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Start date: activate to sort column ascending" style={{ width: '70.2px' }}>เพศ</th>
-                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '67px' }}>ศาสนา</th>
-                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '90px' }}>สถานะภาพ</th>
-                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '130px' }}>สิทธิ์การเข้าถึง</th>
-                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '67px' }}>ใบเสร็จ</th>
-                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '67px' }}>แก้ไข-ลบข้อมูล</th>
+                              <th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: '100px' }}>รหัสสอบ</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '200px' }}>หลักสูตร</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '150px' }}>ประเภทผู้สมัครทดสอบ</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '150px' }}>คำนำหน้า</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '150px' }}>ชื่อ</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '150px' }}>นามสกุล</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '100px' }}>สัญชาติ</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Age: activate to sort column ascending" style={{ width: '100px' }}>วันเกิด</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Start date: activate to sort column ascending" style={{ width: '150x' }}>เพศ</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '100px' }}>สิทธิ์การเข้าถึง</th>
+                              <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '150px' }}>แก้ไข-ลบข้อมูล</th>
                             </tr>
                           </thead>
-                          
-                          <tbody style={{ textAlign: "center" }}> 
+
+                          <tbody style={{ textAlign: "center" }}>
 
                             {/* Search filter */}
                             {display_user.filter((items) => {
                               if (rt_text === "") {
                                 return items
-                              } else if (items.id_card.toLowerCase().includes(rt_text.toLocaleLowerCase())) {
+                              } else if (items.reg_id.toLowerCase().includes(rt_text.toLocaleLowerCase())) {
                                 return items
                               } else if (items.name.toLowerCase().includes(rt_text.toLocaleLowerCase())) {
                                 return items
@@ -178,14 +167,16 @@ function User_info() {
                             }).map((items) => {
                               return (
                                 <>
-                                  <tr key={items.id} role="row" className="odd">
-                                    <td className="sorting_1">{items.id}</td>
-                                    <td >{items.id_card}</td>
-                                    <td>{items.name}  {items.lastname}</td>
-                                    <td>{items.province}</td>
+                                  <tr key={items.reg_id} role="row" className="odd">
+                                    <td className="sorting_1">{items.reg_id}</td>
+                                    <td>{items.course}</td>
+                                    <td>{items.candidate}</td>
+                                    <td>{items.prefix}</td>
+                                    <td>{items.name} </td>
+                                    <td>{items.lastname} </td>
+                                    <td>{items.nationality}</td>
+                                    <td>{items.Thaibirthday}</td>
                                     <td>{items.gender}</td>
-                                    <td>{items.religion}</td>
-                                    <td>{items.status}</td>
                                     <td>{items.permission === "รอชำระเงิน"
                                       ? (
                                         <>
@@ -201,16 +192,17 @@ function User_info() {
                                           </a>
                                         </>
                                       )}</td>
-                                    <td>{items.receipt}</td>
+
+
                                     <td style={{ display: 'flex', justifyContent: "space-between" }}>
-                                      <Link to={{ pathname: `/edit_user_info/${items.id}` }}>
+                                      <Link to={{ pathname: `/edit_user_info/${items.reg_id}` }}>
                                         <button className="btn btn-primary btn-icon-split">
                                           <span className="text">แก้ไข</span>
                                         </button>
                                       </Link>
 
-                                      <button className="btn btn-danger btn-icon-split" onClick={() => delete_user(items.id)}>
-                                        <span className="text">ลบข้อมูล</span>
+                                      <button className="ml-3 btn btn-danger btn-icon-split" onClick={() => delete_user(items.id)}>
+                                        <span className="text">ลบ</span>
                                       </button>
                                     </td>
                                   </tr>
@@ -248,7 +240,7 @@ function User_info() {
               </div>
             </div>
 
-              <button className='btn btn-warning' onClick={generatePDF}>PDF</button>
+
           </div>
           {/* End of Main Content */}
 

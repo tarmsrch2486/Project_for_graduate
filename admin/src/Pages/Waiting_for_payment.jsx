@@ -88,15 +88,12 @@ function Waiting_for_payment() {
 
 
                         <div className="container-fluid">
-                            {/* Page Heading */}
-                            {/* <h1 className="h3 mb-2 text-gray-800">ข้อมูลผู้สมัคร</h1>
-              <p className="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p> */}
-                            {/* DataTales Example */}
                             <div className="card shadow mb-4">
                                 <div className="card-header py-3">
-                                    <h3 className="m-0 font-weight-bold text-primary">ข้อมูลผู้เข้าร่วมการสอบ</h3>
+
                                 </div>
                                 <div className="card-body">
+                                <h1 style={{ textAlign: 'center', fontWeight: "bold", color: "blue" }}>ข้อมูลสำหรับผู้ที่ยังไม่ได้ชำระเงิน</h1>
                                     <div className="table-responsive">
                                         <div id="dataTable_wrapper" className="dataTables_wrapper dt-bootstrap4">
                                             <div className="row">
@@ -111,9 +108,9 @@ function Waiting_for_payment() {
                                                         </label>
 
 
-                                                        <button onClick={back_home} class="btn btn-success btn-icon-split ml-3">
+                                                        {/* <button onClick={back_home} class="btn btn-success btn-icon-split ml-3">
                                                             <span class="text">กลับหน้ารายชื่อ</span>
-                                                        </button>
+                                                        </button> */}
                                                     </div>
                                                 </div>
                                                 <div className="col-sm-12 col-md-6">
@@ -136,32 +133,16 @@ function Waiting_for_payment() {
                                                 <table className="table table-bordered dataTable" id="dataTable" width="100%" cellSpacing={0} role="grid" aria-describedby="dataTable_info" style={{ width: '100%' }}>
                                                     <thead>
                                                         <tr role="row">
-                                                            <th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: '73.2px' }}>ลำดับ</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: '73.2px' }}>เลขบัตรประจำตัวประชาชน</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '94.2px' }}>ชื่อ-นามสกุล</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Age: activate to sort column ascending" style={{ width: '100px' }}>จังหวัดที่ทำการออกบัตรปชช.</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Start date: activate to sort column ascending" style={{ width: '70.2px' }}>เพศ</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '67px' }}>ศาสนา</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '90px' }}>สถานะภาพ</th>
+                                                            <th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: '73.2px' }}>รหัสสอบ</th>
+                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: '73.2px' }}>หลักสูตร</th>
+                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '94.2px' }}>คำนำหน้า</th>
+                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '94.2px' }}>ชื่อ</th>
+                                                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '94.2px' }}>นามสกุล</th>
                                                             <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '130px' }}>สิทธิ์การเข้าถึง</th>
                                                             <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '67px' }}>ใบเสร็จ</th>
                                                             <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '67px' }}>ยืนยันสิทธิ์</th>
                                                         </tr>
                                                     </thead>
-                                                    {/* <tfoot>
-                          <tr>
-                            <th rowSpan={1} colSpan={1}>ลำดับ</th>
-                            <th rowSpan={1} colSpan={1}>เลขบัตรประจำตัวประชาชน</th>
-                            <th rowSpan={1} colSpan={1}>ชื่อ-นามสกุล</th>
-                            <th rowSpan={1} colSpan={1}>จังหวัดที่ทำการออกบัตรปชช.</th>
-                            <th rowSpan={1} colSpan={1}>เพศ</th>
-                            <th rowSpan={1} colSpan={1}>ศาสนา</th>
-                            <th rowSpan={1} colSpan={1}>สถานะภาพ</th>
-                            <th rowSpan={1} colSpan={1}>สิทธิ์การเข้าถึง</th>
-                            <th rowSpan={1} colSpan={1}>ใบเสร็จ</th>
-                            <th rowSpan={1} colSpan={1}>แก้ไข-ลบข้อมูล</th>
-                          </tr>
-                        </tfoot> */}
                                                     <tbody>
 
                                                         {/* Search filter */}
@@ -177,13 +158,11 @@ function Waiting_for_payment() {
                                                             return (
                                                                 <>
                                                                     <tr key={items.id} role="row" className="odd">
-                                                                        <td className="sorting_1">{items.id}</td>
-                                                                        <td >{items.id_card}</td>
-                                                                        <td>{items.name}  {items.lastname}</td>
-                                                                        <td>{items.province}</td>
-                                                                        <td>{items.gender}</td>
-                                                                        <td>{items.religion}</td>
-                                                                        <td>{items.status}</td>
+                                                                        <td className="sorting_1">{items.reg_id}</td>
+                                                                        <td>{items.course}</td>
+                                                                        <td>{items.prefix}</td>
+                                                                        <td>{items.name}</td>
+                                                                        <td>{items.lastname}</td>
                                                                         <td>{items.permission === "รอชำระเงิน"
                                                                             ? (
                                                                                 <>
@@ -199,12 +178,12 @@ function Waiting_for_payment() {
                                                                                     </a>
                                                                                 </>
                                                                             )}</td>
-                                                                        <td>{items.receipt}</td>
+                                                                        <td><img src={`http://localhost:3000/images/${items.receipt}`} alt="" className='img-fluid'/></td>
                                                                         <td style={{ display: 'flex', justifyContent: "space-between" }}>
 
 
                                                                             <button onClick={() => confirm_permission(items.id)} className="btn btn-danger btn-icon-split">
-                                                                                <span className="text">ยืนยันสิทธิ์</span>
+                                                                                <span className="text">คลิกยืนยันสิทธิ์</span>
                                                                             </button>
                                                                         </td>
                                                                     </tr>

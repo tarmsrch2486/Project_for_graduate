@@ -7,7 +7,7 @@ function Navbar_admin(permission) {
     const get_permission = localStorage.getItem("permission")
     const get_name = localStorage.getItem("name")
     const get_lastname = localStorage.getItem("lastname")
-    
+
     const [style, setStyle] = useState('navbar-nav bg-gradient-primary sidebar sidebar-dark accordion')
 
     const ChangeStyle = () => {

@@ -1,39 +1,39 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useParams } from 'react-router-dom'
 
 function Payment_form() {
 
-    useEffect(() => {
-        const get_data = async() => {
-            const res_data = await fetch("http://localhost:3000/")
-        }
-    }, [])
+    const { id } = useParams()
+    const [img, setImg] = useState()
 
-    const submit_login = () => {
-
-        axios.post("http://localhost:3000/login_user", {
-            reg_id: reg_id,
-            id_card: id_card
-        }).then((res) => {
-            //If there are not id_card, Let's show error according to message below
-            if (res.data.status == "false") {
-                // setChange_style("")
-                console.log("false")
-                // setLogin_failed(res.data.error)
-                // setAuthentication(false)
-            } else {
-                // setChange_style("modal")
-                const id_card = res.data.id_card
-                const hide_id_card = id_card.substr(10)
-                setDp_idcard(hide_id_card)
-                setLogin_successful(res.data.message)
-                setAuthentication(true)
-                setUser_data(res.data.result)
-            }
-        })
-
+    const handleImg = (e) => {
+        setImg(e.target.files[0])
     }
 
+    const paid = () => {
+        if (confirm("คุณต้องการบันทึกข้อมูลหรือไม่")) {
+            const formdata = new FormData
+            formdata.append("image", img)
+            axios.put(`http://localhost:3000/payment/${id}`, formdata).then((res) => {
+                if (res.status == 'true') {
+                    alert("บันทึกข้อมูลเสร็จสิ้น")
+                    window.location = '/login_user'
+                } else {
+                    return false
+                }
+            })
+        } else {
+            return false
+        }
+    }
+
+    useEffect(() => {
+        axios.get(`http://localhost:3000/check_payment/${id}`).then((res) => {
+            console.log(res)
+        })
+    }, [])
 
     return (
         <div className="main-panel">
@@ -81,13 +81,16 @@ function Payment_form() {
                                                         <div className="row justify-content-center">
                                                             <div className="col-4">
                                                                 <h4 className='mt-4'>เลขที่บัญชี: </h4>
-                                                                <button type="button" className="btn btn-primary px-5">ชำระเงิน</button>
                                                             </div>
                                                             <div className="col-4">
-                                                            <h4 className='mt-4'>แนบหลักฐานการชำระเงิน: </h4>
-                                                                <input type="file" className="form-control py-2" id="customFile" />
+                                                                <h4 className='mt-4'>แนบหลักฐานการชำระเงิน: </h4>
+                                                                <input type="file" onChange={handleImg} className="form-control py-2" id="customFile" />
                                                             </div>
+
                                                         </div>
+
+
+                                                        <button type="button" onClick={paid} className="btn btn-primary px-5">ชำระเงิน</button>
                                                     </form>
                                                 </div>
                                             </div>
